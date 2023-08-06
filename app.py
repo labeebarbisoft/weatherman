@@ -6,7 +6,7 @@ import csv
 class WeatherDataProcessor:
     def __init__(self, location):
         self.location = location
-        self.__data = {}
+        self._data = {}
         # Read all the data when the object of class is created
         self.process_files()
 
@@ -22,7 +22,7 @@ class WeatherDataProcessor:
             next(file)
             for line in file:
                 # Do not read the last line of format: <!-- 0.289:0 -->
-                if line[0] != "<":
+                if not line.startswith("<"):
                     (
                         date,
                         max_temp,
@@ -48,13 +48,13 @@ class WeatherDataProcessor:
             min_temp = int(min_temp)
             max_humidity = int(max_humidity)
             min_humidity = int(min_humidity)
-        except:
+        except ValueError:
             # If a field is missing then discard the current row
             return
 
-        # Adding new for for the year
-        if year not in self.__data:
-            self.__data[year] = {
+        # Adding new row for the year
+        if year not in self._data:
+            self._data[year] = {
                 "max_temp": max_temp,
                 "min_temp": min_temp,
                 "max_humidity": max_humidity,
@@ -64,7 +64,7 @@ class WeatherDataProcessor:
             }
         # Updating previously existing row for the year
         else:
-            data_year = self.__data[year]
+            data_year = self._data[year]
             data_year["max_temp"] = max(data_year["max_temp"], max_temp)
             data_year["min_temp"] = min(data_year["min_temp"], min_temp)
             data_year["max_humidity"] = max(data_year["max_humidity"], max_humidity)
@@ -85,7 +85,7 @@ class WeatherDataProcessor:
             )
         )
         print("-" * (12 + 15 + 15 + 19 + 12))
-        for year, weather_data in sorted(self.__data.items()):
+        for year, weather_data in sorted(self._data.items()):
             max_temp = weather_data["max_temp"]
             min_temp = weather_data["min_temp"]
             max_humidity = weather_data["max_humidity"]
@@ -103,7 +103,7 @@ class WeatherDataProcessor:
             )
         )
         print("-" * (12 + 15 + 4))
-        for year, weather_data in sorted(self.__data.items()):
+        for year, weather_data in sorted(self._data.items()):
             hottest_date = weather_data["hottest_date"]
             hottest_temp = weather_data["hottest_temp"]
             print(f"{year:<12}{hottest_date:<15}{hottest_temp:<4}")
@@ -121,7 +121,8 @@ def main():
             The directory containing weather data files
             """
 
-    if len(sys.argv) == 3 and sys.argv[1] in ["1", "2"]:
+    # The program assumes user will either ask for report 1/2 with correct data destination or for usage with 0 args
+    if len(sys.argv) == 3:
         operation = sys.argv[1]
         location = sys.argv[2]
         weather_object = WeatherDataProcessor(location)
@@ -129,7 +130,7 @@ def main():
             weather_object.generate_report_1()
         elif operation == "2":
             weather_object.generate_report_2()
-    else:
+    elif len(sys.argv) == 1:
         print(usage)
 
 
