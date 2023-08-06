@@ -6,7 +6,7 @@ import csv
 class WeatherDataProcessor:
     def __init__(self, location):
         self.location = location
-        self._data = {}
+        self.__data = {}
         # Read all the data when the object of class is created
         self.process_files()
 
@@ -51,8 +51,8 @@ class WeatherDataProcessor:
         max_humidity = int(max_humidity)
         min_humidity = int(min_humidity)
 
-        if year not in self._data:
-            self._data[year] = {
+        if year not in self.__data:
+            self.__data[year] = {
                 "max_temp": max_temp,
                 "min_temp": min_temp,
                 "max_humidity": max_humidity,
@@ -61,7 +61,7 @@ class WeatherDataProcessor:
                 "hottest_temp": max_temp,
             }
         else:
-            data_year = self._data[year]
+            data_year = self.__data[year]
             data_year["max_temp"] = max(data_year["max_temp"], max_temp)
             data_year["min_temp"] = min(data_year["min_temp"], min_temp)
             data_year["max_humidity"] = max(data_year["max_humidity"], max_humidity)
@@ -82,7 +82,7 @@ class WeatherDataProcessor:
             )
         )
         print("-" * (12 + 15 + 15 + 19 + 12))
-        for year, weather_data in sorted(self._data.items()):
+        for year, weather_data in sorted(self.__data.items()):
             max_temp = weather_data["max_temp"]
             min_temp = weather_data["min_temp"]
             max_humidity = weather_data["max_humidity"]
@@ -100,7 +100,7 @@ class WeatherDataProcessor:
             )
         )
         print("-" * (12 + 15 + 4))
-        for year, weather_data in sorted(self._data.items()):
+        for year, weather_data in sorted(self.__data.items()):
             hottest_date = weather_data["hottest_date"]
             hottest_temp = weather_data["hottest_temp"]
             print(f"{year:<12}{hottest_date:<15}{hottest_temp:<4}")
