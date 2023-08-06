@@ -23,34 +23,36 @@ class WeatherDataProcessor:
             for line in file:
                 # Do not read the last line of format: <!-- 0.289:0 -->
                 if line[0] != "<":
-                    try:
-                        (
-                            date,
-                            max_temp,
-                            _,
-                            min_temp,
-                            _,
-                            _,
-                            _,
-                            max_humidity,
-                            _,
-                            min_humidity,
-                            *_,
-                        ) = line.strip().split(",")
-                        year = date.split("-")[0]
-                        self.update_data(
-                            year, max_temp, min_temp, max_humidity, min_humidity, date
-                        )
-                    except:
-                        # Discard the line that has missing fileds among the fields required for report
-                        pass
+                    (
+                        date,
+                        max_temp,
+                        _,
+                        min_temp,
+                        _,
+                        _,
+                        _,
+                        max_humidity,
+                        _,
+                        min_humidity,
+                        *_,
+                    ) = line.strip().split(",")
+                    year = date.split("-")[0]
+                    self.update_data(
+                        year, max_temp, min_temp, max_humidity, min_humidity, date
+                    )
 
     def update_data(self, year, max_temp, min_temp, max_humidity, min_humidity, date):
-        max_temp = int(max_temp)
-        min_temp = int(min_temp)
-        max_humidity = int(max_humidity)
-        min_humidity = int(min_humidity)
+        # Will throw an exception while converting if the field is missing
+        try:
+            max_temp = int(max_temp)
+            min_temp = int(min_temp)
+            max_humidity = int(max_humidity)
+            min_humidity = int(min_humidity)
+        except:
+            # If a field is missing then discard the current row
+            return
 
+        # Adding new for for the year
         if year not in self.__data:
             self.__data[year] = {
                 "max_temp": max_temp,
@@ -60,6 +62,7 @@ class WeatherDataProcessor:
                 "hottest_date": date,
                 "hottest_temp": max_temp,
             }
+        # Updating previously existing row for the year
         else:
             data_year = self.__data[year]
             data_year["max_temp"] = max(data_year["max_temp"], max_temp)
