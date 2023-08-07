@@ -1,6 +1,4 @@
 import os
-import sys
-import csv
 import argparse
 
 
@@ -121,18 +119,6 @@ def main():
             [data_dir]
             The directory containing weather data files
             """
-
-    # The program assumes user will either ask for report 1/2 with correct data destination or for usage with 0 args
-    # if len(sys.argv) == 3:
-    #     operation = sys.argv[1]
-    #     location = sys.argv[2]
-    #     weather_object = WeatherDataProcessor(location)
-    #     if operation == "1":
-    #         weather_object.generate_report_1()
-    #     elif operation == "2":
-    #         weather_object.generate_report_2()
-    # elif len(sys.argv) == 1:
-    #     print(usage)
 
     parser = argparse.ArgumentParser(description="Weather Data Processor")
     parser.add_argument(
