@@ -1,6 +1,7 @@
 import os
 import sys
 import csv
+import argparse
 
 
 class WeatherDataProcessor:
@@ -122,16 +123,39 @@ def main():
             """
 
     # The program assumes user will either ask for report 1/2 with correct data destination or for usage with 0 args
-    if len(sys.argv) == 3:
-        operation = sys.argv[1]
-        location = sys.argv[2]
-        weather_object = WeatherDataProcessor(location)
-        if operation == "1":
-            weather_object.generate_report_1()
-        elif operation == "2":
-            weather_object.generate_report_2()
-    elif len(sys.argv) == 1:
+    # if len(sys.argv) == 3:
+    #     operation = sys.argv[1]
+    #     location = sys.argv[2]
+    #     weather_object = WeatherDataProcessor(location)
+    #     if operation == "1":
+    #         weather_object.generate_report_1()
+    #     elif operation == "2":
+    #         weather_object.generate_report_2()
+    # elif len(sys.argv) == 1:
+    #     print(usage)
+
+    parser = argparse.ArgumentParser(description="Weather Data Processor")
+    parser.add_argument(
+        "operation",
+        choices=["1", "2"],
+        nargs="?",
+        help="Choose operation: 1 or 2",
+    )
+    parser.add_argument(
+        "location",
+        choices=["weatherdata/"],
+        nargs="?",
+        help="Location for weather data processing",
+    )
+    args = parser.parse_args()
+    if args.operation is None and args.location is None:
         print(usage)
+    else:
+        weather_object = WeatherDataProcessor(args.location)
+        if args.operation == "1":
+            weather_object.generate_report_1()
+        elif args.operation == "2":
+            weather_object.generate_report_2()
 
 
 if __name__ == "__main__":
