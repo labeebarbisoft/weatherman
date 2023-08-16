@@ -4,23 +4,11 @@ from usage import Usage
 from data_reader import DataReader
 from data_calculator import DataCalculator
 from report_generator import ReportGenerator
+from arg_parser import parse_arguments
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Weather Data Processor")
-    parser.add_argument(
-        "operation",
-        choices=["1", "2"],
-        nargs="?",
-        help="Choose operation: 1 or 2",
-    )
-    parser.add_argument(
-        "location",
-        choices=["weatherdata/"],
-        nargs="?",
-        help="Location for weather data processing",
-    )
-    args = parser.parse_args()
+    args = parse_arguments()
     if args.operation is None and args.location is None:
         Usage.print_usage()
     else:
